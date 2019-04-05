@@ -464,7 +464,7 @@ static void createmeta( lua_State* L, const char* name,
 #endif
 
 LUALIB_API int luaopen_csv( lua_State* L ) {
-    luaL_register( L, LUA_CSVLIBNAME, csv );
+    luaL_newlib( L, csv );
     createmeta( L, CSV_META_READER, csv_reader );
     createmeta( L, CSV_META_WRITER, csv_writer );
     createmeta( L, CSV_META_ARRAY, csv_array );
