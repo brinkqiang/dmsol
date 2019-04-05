@@ -67,7 +67,7 @@ function pbcodec:encode(message, data)
     --print(self.pb.tohex(bytes))
 
     -- and decode the binary data back into lua table
-    local data2 = assert(self.pb.decode(message, bytes))
+    --local data2 = assert(self.pb.decode(message, bytes))
     --print(self.ser.block(data2))
 
     return bytes
