@@ -1,13 +1,16 @@
 
-#include "dmsol.h"
+#include "sol.hpp"
+#include "sol_forward.hpp"
+#include "test/gtest/gtest.h"
+TEST(luapb, luapb)
+{
+    sol::state lua;
 
-int main( int argc, char* argv[] ) {
+    auto result1 = lua.safe_script("function f() end", sol::script_pass_on_error);
 
-    Idmsol* module = dmsolGetModule();
-    if (module)
+    for (int i=0; i < 1000000; ++i)
     {
-        module->Test();
-        module->Release();
+        sol::function f = lua["f"];
+        f();
     }
-    return 0;
 }
