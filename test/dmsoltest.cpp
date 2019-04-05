@@ -73,9 +73,10 @@ TEST(lua_pbcodec, lua_pbcodec)
     {
         return;
     }
+    
+    sol::function f = lua["pbtest"];
     for (int i = 0; i < 1000000; ++i)
     {
-        sol::function f = lua["pbtest"];
         f();
     }
 
