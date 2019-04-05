@@ -5126,6 +5126,8 @@ namespace sol {
 		jit,
 		// library for handling utf8: new to Lua
 		utf8,
+        // pb
+        pb,
 		// do not use
 		count
 	};
@@ -21218,6 +21220,10 @@ namespace sol {
 					lua_pop(L, 1);
 #endif // LuaJIT Only
 					break;
+                case lib::pb:
+                    luaL_requiref(L, "pb", luaopen_pb, 0);
+                    lua_pop(L, 1);
+                    break;
 				case lib::count:
 				default:
 					break;

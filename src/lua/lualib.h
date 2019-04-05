@@ -47,6 +47,9 @@ LUAMOD_API int ( luaopen_debug )( lua_State* L );
 #define LUA_CSVLIBNAME  "csv"
 LUALIB_API int ( luaopen_csv )( lua_State* L );
 
+#define LUA_PBLIBNAME  "pb"
+LUALIB_API int (luaopen_pb)(lua_State* L);
+
 #define LUA_LOADLIBNAME "package"
 LUAMOD_API int ( luaopen_package )( lua_State* L );
 
