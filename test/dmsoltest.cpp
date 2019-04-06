@@ -6,7 +6,7 @@
 TEST(lua_empty_call, lua_empty_call)
 {
     sol::state lua;
-
+    lua.open_libraries();
     auto result1 = lua.safe_script("function f() end", sol::script_pass_on_error);
 
     for (int i=0; i < 1000000; ++i)
@@ -20,7 +20,7 @@ TEST(lua_empty_call, lua_empty_call)
 TEST(lua_tb_create, lua_tb_create)
 {
     sol::state lua;
-    
+    lua.open_libraries();
     auto result1 = lua.safe_script("function f()"
         "local ret = {}"
         "ret.number = \"13615632545\""
@@ -50,6 +50,7 @@ TEST(lua_pbcodec, lua_pbcodec)
     auto result0 = lua.load_file("pbcodec.lua");
     if (!result0.valid())
     {
+        ASSERT_TRUE(0);
         return;
     }
     auto result1 = lua.safe_script(
@@ -71,11 +72,12 @@ TEST(lua_pbcodec, lua_pbcodec)
         "end", sol::script_pass_on_error);
     if (!result1.valid())
     {
+        ASSERT_TRUE(0);
         return;
     }
     
     sol::function f = lua["pbtest"];
-    for (int i = 0; i < 1000000; ++i)
+    for (int i = 0; i < 10000; ++i)
     {
         f();
     }
