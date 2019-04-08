@@ -23,6 +23,10 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
+#ifndef WIN32
+#include <unistd.h>
+#endif
+
 
 /*
 ** LUA_IGMARK is a mark to ignore all before it when building the
