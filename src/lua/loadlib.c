@@ -23,11 +23,12 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-#ifndef WIN32
+#ifdef WIN32
+#include <direct.h>
+#else
 #include <unistd.h>
 #define MAX_PATH PATH_MAX
 #endif
-
 
 /*
 ** LUA_IGMARK is a mark to ignore all before it when building the
