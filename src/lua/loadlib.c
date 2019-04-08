@@ -25,6 +25,7 @@
 
 #ifndef WIN32
 #include <unistd.h>
+#define MAX_PATH PATH_MAX
 #endif
 
 
