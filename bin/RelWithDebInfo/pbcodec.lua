@@ -9,7 +9,7 @@ pbcodec.protoc = require "protoc"
 pbcodec.ser = require "serpent"
 pbcodec.all_messages = {}
 pbcodec.debug = require "profiler"
-
+print(pbcodec.debug)
 --pbcodec.protoc.paths[#pbcodec.protoc.paths + 1] = "../starve-lua/proto/Protocol"
 pbcodec.protoc.paths[#pbcodec.protoc.paths + 1] = "../starve-lua/proto"
 pbcodec.protoc.include_imports = true
@@ -34,11 +34,20 @@ function pbcodec:showTable(t)
 end
 
 function pbcodec:start()
-    pbcodec.debug.start()
+    print("debug start")
+    self.debug.start(1000, 10)
 end
 
 function pbcodec:stop()
-    pbcodec.debug.stop()
+    print("debug stop")   
+    local info,n = self.debug:info()
+    self.debug.stop()
+
+    for filename, line_t in pairs(info) do
+	    for line, count in pairs(line_t) do
+		    print(filename, line, count)
+	    end
+    end
 end
 function pbcodec:load_file(filename)
 
@@ -56,11 +65,11 @@ end
 function pbcodec:init_message()
     for message in self.pb.types() do
         self.all_messages[message] = message
-        print("protoname=" .. message)
+        --print("protoname=" .. message)
     end
 
     for name, basename, type in self.pb.types() do
-        print(name, basename, type)
+        --print(name, basename, type)
     end
 end
 
