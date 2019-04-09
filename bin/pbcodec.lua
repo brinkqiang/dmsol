@@ -6,6 +6,7 @@ pbcodec = {}
 pbcodec.pb = require "pb"
 pbcodec.protoc = require "protoc"
 pbcodec.ser = require "serpent"
+pbcodec.all_messages = {}
 
 --pbcodec.protoc.paths[#pbcodec.protoc.paths + 1] = "../starve-lua/proto/Protocol"
 pbcodec.protoc.paths[#pbcodec.protoc.paths + 1] = "../starve-lua/proto"
@@ -39,35 +40,33 @@ function pbcodec:load_file(filename)
         return false
     end
     print("load file ok")
+    self:init_message()
     return true
 end
 
-function pbcodec:find_message(message)
-    local dataType = nil
-    local type_table = {}
-
-    for name in self.pb.types() do
-        type_table[name] = name
-        if name == "." .. message then
-            dataType = name
-        end
+function pbcodec:init_message()
+    for message in self.pb.types() do
+        self.all_messages[message] = message
+        print("protoname=" .. message)
     end
+end
 
-    return dataType, type_table
+function pbcodec:find_message(message)
+    return self.all_messages["." .. message]
 end
 
 function pbcodec:encode(message, data)
     if self:find_message(message) == nil then
         return ""
     end
-    
+    --print("encode=" .. message)
     -- encode lua table data into binary format in lua string and return
     local bytes = assert(self.pb.encode(message, data))
-    --print(self.pb.tohex(bytes))
+    -- print(self.pb.tohex(bytes))
 
     -- and decode the binary data back into lua table
-    --local data2 = assert(self.pb.decode(message, bytes))
-    --print(self.ser.block(data2))
+    -- local data2 = assert(self.pb.decode(message, bytes))
+    -- print(self.ser.block(data2))
 
     return bytes
 end
@@ -76,7 +75,7 @@ function pbcodec:decode(message, bytes)
     if self:find_message(message) == nil then
         return {}
     end
-
+    --print("decode=" .. message)
     -- and decode the binary data back into lua table
     local data2 = assert(self.pb.decode(message, bytes))
     --print(require "serpent".block(data2))
