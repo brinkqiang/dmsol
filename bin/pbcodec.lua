@@ -1,5 +1,6 @@
 package.path = package.path.. ";../?.lua;../../?.lua;../../bin/?.lua"
 package.cpath = package.cpath..";./lib/?.so"
+
 print(package.path)
 pbcodec = {}
 
@@ -7,6 +8,7 @@ pbcodec.pb = require "pb"
 pbcodec.protoc = require "protoc"
 pbcodec.ser = require "serpent"
 pbcodec.all_messages = {}
+pbcodec.debug = require "profiler"
 
 --pbcodec.protoc.paths[#pbcodec.protoc.paths + 1] = "../starve-lua/proto/Protocol"
 pbcodec.protoc.paths[#pbcodec.protoc.paths + 1] = "../starve-lua/proto"
@@ -31,6 +33,13 @@ function pbcodec:showTable(t)
     print(self.ser.block(t))
 end
 
+function pbcodec:start()
+    pbcodec.debug.start()
+end
+
+function pbcodec:stop()
+    pbcodec.debug.stop()
+end
 function pbcodec:load_file(filename)
 
     local func1 = function() self.protoc:loadfile(filename) end
