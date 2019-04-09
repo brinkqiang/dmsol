@@ -57,8 +57,7 @@ function pbcodec:find_message(message)
 end
 
 function pbcodec:encode(message, data)
-    if self:find_message(message) == nil
-    then
+    if self:find_message(message) == nil then
         return ""
     end
     
@@ -74,8 +73,7 @@ function pbcodec:encode(message, data)
 end
 
 function pbcodec:decode(message, bytes)
-    if self:find_message(message) == nil
-    then
+    if self:find_message(message) == nil then
         return {}
     end
 
