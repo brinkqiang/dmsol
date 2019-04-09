@@ -49,17 +49,21 @@ function pbcodec:init_message()
         self.all_messages[message] = message
         print("protoname=" .. message)
     end
+
+    for name, basename, type in self.pb.types() do
+        print(name, basename, type)
+    end
 end
 
 function pbcodec:find_message(message)
-    return self.all_messages["." .. message]
+    return self.pb.type("." .. message)
 end
 
 function pbcodec:encode(message, data)
     if self:find_message(message) == nil then
+        print("encode err=" .. message)
         return ""
     end
-    --print("encode=" .. message)
     -- encode lua table data into binary format in lua string and return
     local bytes = assert(self.pb.encode(message, data))
     -- print(self.pb.tohex(bytes))
@@ -73,9 +77,9 @@ end
 
 function pbcodec:decode(message, bytes)
     if self:find_message(message) == nil then
+        print("decode err=" .. message)
         return {}
     end
-    --print("decode=" .. message)
     -- and decode the binary data back into lua table
     local data2 = assert(self.pb.decode(message, bytes))
     --print(require "serpent".block(data2))
