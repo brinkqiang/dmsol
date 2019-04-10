@@ -25,6 +25,7 @@
 
 #ifdef WIN32
 #include <direct.h>
+#define chdir _chdir
 #else
 #include <unistd.h>
 #define MAX_PATH PATH_MAX

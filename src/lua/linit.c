@@ -52,6 +52,7 @@ static const luaL_Reg loadedlibs[] = {
     {LUA_DBLIBNAME, luaopen_debug},
     {LUA_CSVLIBNAME, luaopen_csv },
     {LUA_PBLIBNAME, luaopen_pb },
+    {LUA_PROFILERLIBNAME, luaopen_profiler },
 #if defined(LUA_COMPAT_BITLIB)
     {LUA_BITLIBNAME, luaopen_bit32},
 #endif

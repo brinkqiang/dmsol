@@ -2,9 +2,12 @@
 #include <lauxlib.h>
 #include <string.h>
 
+#define LUA_PROFILER_NAME_LEN 128
+
 struct profiler_log {
 	int linedefined;
 	char source[LUA_IDSIZE];
+    char name[LUA_PROFILER_NAME_LEN];
 };
 
 struct profiler_count {
@@ -25,12 +28,14 @@ profiler_hook(lua_State *L, lua_Debug *ar) {
 	while(index >= p->total) {
 		index -= p->total;
 	}
-	if (lua_getinfo(L, "S", ar) != 0) {
+	if (lua_getinfo(L, "nSlufL", ar) != 0) {
 		log[index].linedefined = ar->linedefined;
 		strcpy(log[index].source, ar->short_src);
+        strcpy(log[index].name, ar->name ? ar->name : "");
 	} else {
 		log[index].linedefined = 1;
 		strcpy(log[index].source, "[unknown]");
+        strcpy(log[index].name, "[unknown]");
 	}
 }
 
@@ -49,7 +54,7 @@ lstart(lua_State *L) {
 	p->index = 0;
 	lua_pushvalue(L, -1);
 	lua_rawsetp(L, LUA_REGISTRYINDEX, cL);
-	lua_sethook(cL, profiler_hook, LUA_MASKCOUNT, interval);
+	lua_sethook(cL, profiler_hook, LUA_MASKCALL, interval);
 	
 	return 0;
 }
