@@ -48,10 +48,13 @@ LUAMOD_API int ( luaopen_debug )( lua_State* L );
 LUALIB_API int ( luaopen_csv )( lua_State* L );
 
 #define LUA_PBLIBNAME  "pb"
-LUALIB_API int (luaopen_pb)(lua_State* L);
+LUALIB_API int (luaopen_pb)( lua_State* L );
 
 #define LUA_PROFILERLIBNAME  "profiler"
-LUALIB_API int (luaopen_profiler)(lua_State* L);
+LUALIB_API int (luaopen_profiler)( lua_State* L );
+
+#define LUA_MILLISECONDLIBNAME  "millisecond"
+LUALIB_API int (luaopen_millisecond)( lua_State* L );
 
 #define LUA_LOADLIBNAME "package"
 LUAMOD_API int ( luaopen_package )( lua_State* L );
