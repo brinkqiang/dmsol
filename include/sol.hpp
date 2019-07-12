@@ -21221,8 +21221,8 @@ namespace sol {
 #endif // LuaJIT Only
 					break;
                 case lib::pb:
-                    luaL_requiref(L, "pb", luaopen_pb, 0);
-                    lua_pop(L, 1);
+                    //luaL_requiref(L, "pb", luaopen_pb, 0);
+                    //lua_pop(L, 1);
                     break;
 				case lib::count:
 				default:

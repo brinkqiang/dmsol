@@ -1,10 +1,12 @@
-
+#define SOL_PRINT_ERRORS  1
+#define SOL_NO_EXCEPTIONS 1
 
 #include "sol.hpp"
 #include "sol_forward.hpp"
-#include "test/gtest/gtest.h"
+#include "gtest/gtest.h"
 
-#define TEST_MAX_COUNT 1000000
+#define TEST_MAX_COUNT 10000
+
 TEST(lua_empty_call, lua_empty_call)
 {
     sol::state lua;
@@ -19,6 +21,7 @@ TEST(lua_empty_call, lua_empty_call)
     //lua_empty_call.lua_empty_call (157 ms) -> call
     //lua_empty_call.lua_empty_call (1599 ms) -> pcall
 }
+
 TEST(lua_tb_create, lua_tb_create)
 {
     sol::state lua;
@@ -45,46 +48,7 @@ TEST(lua_tb_create, lua_tb_create)
     //lua_tb_create.lua_tb_create (8294 ms) -> pcall
 }
 //
-//TEST(lua_pbcodec_single, lua_pbcodec_single)
-//{
-//    sol::state lua;
-//    lua.open_libraries();
-//
-//    auto result0 = lua.load_file("pbcodec.lua");
-//    if (!result0.valid())
-//    {
-//        ASSERT_TRUE(0);
-//        return;
-//    }
-//    auto result1 = lua.safe_script(
-//        "local pbload = require \"pbcodec\""
-//        "pbcodec:load_file(\"net.proto\")"
-//
-//        "function pbtest()"
-//        "local msg = {}"
-//        "msg.number = \"13615632545\""
-//        "msg.email = \"13615632545@163.com\""
-//        "msg.age = 28"
-//        "msg.ptype = 2"
-//        "msg.desc = {}"
-//        "msg.desc[1] = \"first\""
-//        "msg.desc[2] = \"second\""
-//        "msg.desc[3] = \"three\""
-//        "local msg_data = { proto = \"net.tb_Person\", data = pbload:encode(\"net.tb_Person\", msg) }"
-//        "local msg2 = pbload:decode(\"net.tb_Person\", msg_data.data)"
-//        "msg.desc = {}"
-//        "end", sol::script_pass_on_error);
-//    if (!result1.valid())
-//    {
-//        ASSERT_TRUE(0);
-//        return;
-//    }
-//
-//    sol::function f = lua["pbtest"];
-//    f();
-//}
-
-TEST(lua_pbcodec, lua_pbcodec)
+TEST(lua_pbcodec_single, lua_pbcodec_single)
 {
     sol::state lua;
     lua.open_libraries();
@@ -96,34 +60,59 @@ TEST(lua_pbcodec, lua_pbcodec)
         return;
     }
     auto result1 = lua.safe_script(
-        "local pbload = require \"pbcodec\""
-        "pbcodec:load_file(\"net.proto\")"
+        "local pb = require \"luapb\"\n"
+        "pb:import(\"net.proto\")\n"
+        "function pbtest()\n"
+        "local msg = {}\n"
+        "msg.number = \"13615632545\"\n"
+        "msg.email = \"13615632545@163.com\"\n"
+        "msg.age = 28\n"
+        "msg.ptype = 2\n"
+        "msg.desc = {}\n"
+        "msg.desc[1] = \"first\"\n"
+        "msg.desc[2] = \"second\"\n"
+        "msg.desc[3] = \"three\"\n"
 
-        "function pbtest()"
-        "local msg = {}"
-        "msg.number = \"13615632545\""
-        "msg.email = \"13615632545@163.com\""
-        "msg.age = 28"
-        "msg.ptype = 2"
-        "msg.desc = {}"
-        "msg.desc[1] = \"first\""
-        "msg.desc[2] = \"second\""
-        "msg.desc[3] = \"three\""
-        "local msg_data = { proto = \"net.tb_Person\", data = pbload:encode(\"net.tb_Person\", msg) }"
-        "local msg2 = pbload:decode(\"net.tb_Person\", msg_data.data)"
-        "end", sol::script_pass_on_error);
+        "local buffer = pb:encode(\"net.tb_Person\", msg)\n"
+        "local msg2 = pb:decode(\"net.tb_Person\", buffer)\n"
+        "end\n", sol::script_throw_on_error);
     if (!result1.valid())
     {
         ASSERT_TRUE(0);
         return;
     }
-    
-    sol::function f = lua["pbtest"];
-    for (int i = 0; i < TEST_MAX_COUNT; ++i)
-    {
-        f();
-    }
 
-    //lua_tb_create.lua_tb_create (1655 ms)
-    //lua_tb_create.lua_tb_create (8294 ms) -> pcall
+    sol::function f = lua["pbtest"];
+    f();
+}
+
+#define SOL_CHECK_ARGUMENTS 1
+#include <sol.hpp>
+#include "myobject_module.h"
+
+#include <iostream>
+
+TEST(lua_require, lua_require)
+{
+	std::cout << "=== require from DLL ===" << std::endl;
+
+	sol::state lua;
+	lua.open_libraries(sol::lib::package, sol::lib::base);
+
+	const auto& code = R"(
+    mo = require("myobject")
+
+    obj = mo.test.new(24)
+    print(obj.value))";
+	auto script_result = lua.safe_script(code, &sol::script_pass_on_error);
+	if (script_result.valid()) {
+		std::cout << "The DLL was require'd from successfully!" << std::endl;
+	}
+	else {
+		sol::error err = script_result;
+		std::cout << "Something bad happened: " << err.what() << std::endl;
+	}
+	assert(script_result.valid());
+	my_object::test& obj = lua["obj"];
+	assert(obj.value == 24);
 }
