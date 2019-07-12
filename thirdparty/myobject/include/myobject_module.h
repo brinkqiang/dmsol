@@ -30,6 +30,26 @@ extern "C" {
 #include "lualib.h"
 #include "lauxlib.h"
 
+
+// forward declare as a C struct 
+// so a pointer to lua_State can be part of a signature
+extern "C" {
+	struct lua_State;
+}
+// you can replace the above if you're fine with including 
+// <sol.hpp> earlier than absolutely necessary
+
+namespace my_object {
+
+	struct test {
+		int value;
+
+		test() = default;
+		test(int val) : value(val) {}
+	};
+
+} // namespace my_object
+
 LUAMOD_API int luaopen_myobject(lua_State* L);
 
 LUAMOD_API int require_myobject(lua_State* L);

@@ -21,14 +21,27 @@
 
 #include "myobject_module.h"
 
+#define SOL_CHECK_ARGUMENTS 1
+#include <sol.hpp>
+
+namespace my_object {
+
+	sol::table open_my_object(sol::this_state L) {
+		sol::state_view lua(L);
+		sol::table module = lua.create_table();
+		module.new_usertype<test>("test",
+			sol::constructors<test(), test(int)>(),
+			"value", &test::value
+			);
+
+		return module;
+	}
+
+} // namespace my_object
+
 LUAMOD_API int luaopen_myobject(lua_State* L)
 {
-    luaL_Reg l[] = {
-        { NULL, NULL },
-    };
-    
-    luaL_newlib(L, l);
-    return 1;
+	return sol::stack::call_lua(L, 1, my_object::open_my_object );
 }
 
 LUAMOD_API int require_myobject(lua_State* L)
