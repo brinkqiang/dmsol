@@ -48,20 +48,14 @@ TEST(lua_tb_create, lua_tb_create)
     //lua_tb_create.lua_tb_create (8294 ms) -> pcall
 }
 //
-TEST(lua_pbcodec_single, lua_pbcodec_single)
+TEST(lua_pb, lua_pb)
 {
     sol::state lua;
     lua.open_libraries();
 
-    auto result0 = lua.load_file("pbcodec.lua");
-    if (!result0.valid())
-    {
-        ASSERT_TRUE(0);
-        return;
-    }
     auto result1 = lua.safe_script(
         "local pb = require \"luapb\"\n"
-        "pb:import(\"net.proto\")\n"
+        "pb.import(\"net.proto\")\n"
         "function pbtest()\n"
         "local msg = {}\n"
         "msg.number = \"13615632545\"\n"
@@ -73,8 +67,8 @@ TEST(lua_pbcodec_single, lua_pbcodec_single)
         "msg.desc[2] = \"second\"\n"
         "msg.desc[3] = \"three\"\n"
 
-        "local buffer = pb:encode(\"net.tb_Person\", msg)\n"
-        "local msg2 = pb:decode(\"net.tb_Person\", buffer)\n"
+        "local buffer = pb.encode(\"net.tb_Person\", msg)\n"
+        "local msg2 = pb.decode(\"net.tb_Person\", buffer)\n"
         "end\n", sol::script_throw_on_error);
     if (!result1.valid())
     {
